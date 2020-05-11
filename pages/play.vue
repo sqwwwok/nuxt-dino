@@ -36,7 +36,7 @@ import OptionList from '~/components/play-views/option-list'
 import Obstacle from '~/components/play-views/obstacle-stick'
 import MessageBox from '~/components/play-views/message-box'
 const OBSTACLE_CONFIG = {
-  interval: 7000,
+  interval: 4000,
   minWidth: 10,   // percentage
   maxWidth: 11,   // percentage
   minHeight: 10,    // px
@@ -44,7 +44,7 @@ const OBSTACLE_CONFIG = {
   minThickness: 10,   // px
   maxThickness: 40,   // px
   generate: true,
-  moveSpeed: 1,
+  moveSpeed: 0.7,
   move: {move: true}
 },
 OBSERVE_INTERVAL = 16,

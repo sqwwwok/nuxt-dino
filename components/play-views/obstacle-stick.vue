@@ -40,12 +40,12 @@ export default {
   methods:{
     destroy () {
       this.$emit('destroy')
-      clearInterval(this.moveInterval)
+      cancelAnimationFrame(this.moveInterval)
     },
     checkPosition () {
+      this.moveInterval = requestAnimationFrame(this.checkPosition);
       if(!this.move.move) {
-        clearInterval(this.moveInterval)
-        this.moveInterval = null  
+        cancelAnimationFrame(this.moveInterval)
       }
       this.positionX+=this.moveSpeed;
       if(this.positionX>=50 && this.notMid){
@@ -69,10 +69,7 @@ export default {
     },
   },
   mounted () {
-    this.moveInterval = setInterval (
-      this.checkPosition,
-      50
-  );
+    this.moveInterval = requestAnimationFrame(this.checkPosition);
   },
   
   
