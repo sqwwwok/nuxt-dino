@@ -1,43 +1,28 @@
 <template>
-  <div class="messages">
-    <div class="start-card" v-show="startCard">
-      Are you ready ?
-      <br />
-      <el-button class="start-button" type="primary" @click="startGame">
-        Go!!!
-      </el-button>
+  <transition name="msg-show">
+    <el-card class="message-card" v-show="msgViewed" >
+    <div slot="header">
+      <span>{{ msgViewed }}</span>
+      <i class="close-icon el-icon-circle-close"
+        @click="closeMsg"></i>
     </div>
-    <el-card class="message-card" v-show="!startCard&&componentId">
-      <div slot="header">
-        <span>{{ componentId }}</span>
-        <i class="close-icon el-icon-circle-close"
-          @click="closeMessage"></i>
-      </div>
-      <transition name="message-change" mode="out-in">
-        <component 
-        :is='componentId'
-        ></component>
-      </transition>
-    </el-card>   
-  </div>   
+    <transition name="msg-change" mode="out-in">
+      <component :is='msgViewed'></component>
+    </transition>
+    </el-card>    
+  </transition>
 </template>
 
 <script>
-import Character from '../message-content/Character'
-import Pocket from '../message-content/Pocket'
-import Skill from '../message-content/Skill'
-import System from '../message-content/System'
+import Character from './message-content/Character'
+import Pocket from './message-content/Pocket'
+import Skill from './message-content/Skill'
+import System from './message-content/System'
 export default {
-  props: {
-    startCard: Boolean,
-    componentId: String
-  },
+  props: ['msgViewed'],
   methods: {
-    startGame(){
-      this.$emit('start');
-    },
-    closeMessage(){
-      this.$emit('closeMessage');
+    closeMsg(){
+      this.$emit('closeMsg');
     }
   },
   components: {
@@ -47,18 +32,18 @@ export default {
 </script>
 
 <style scoped>
-.messages .start-card{
-  font-size: 90px;
-  width: max-content;
+.msg-show-enter-active, .msg-show-leave-active{
+  transition: all 1s;
 }
-.messages .start-card .start-button{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 30px;
-  font-size: 25px;
+.msg-show-enter, .msg-show-leave-to{
+  transform: translateX(-100px);
+  opacity: 0;
 }
-.messages .message-card .close-icon{
-  float: right;
+.msg-change-enter-active, .msg-change-leave-active{
+  transition: all 2s;
+}
+.msg-change-enter, .msg-change-leave-to{
+  opacity: 0;
+  transform: translateY(-500px);
 }
 </style>

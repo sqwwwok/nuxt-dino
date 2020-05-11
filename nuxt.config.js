@@ -16,8 +16,7 @@ module.exports = {
   },
   loading: { color: '#fff' },
   css: [
-    'element-ui/lib/theme-chalk/index.css',
-    'assets/css/main.css'
+    'element-ui/lib/theme-chalk/index.css'
   ],
   plugins: [
     '@/plugins/element-ui',
@@ -27,8 +26,12 @@ module.exports = {
   //   '@nuxtjs/eslint-module'
   // ],
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/style-resources'
   ],
+  styleResources: {
+    less: './assets/**/*.less'
+  },
   axios: {
   },
   build: {

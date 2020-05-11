@@ -3,7 +3,7 @@
     <el-button 
       v-for="(buttonName,index) of buttons" 
       :key="index" 
-      @click="$emit('query',buttonName)"
+      @click="$emit('viewMsg',buttonName)"
       type="info" size="middle" round>
       {{ buttonName }}
     </el-button>
@@ -23,6 +23,7 @@ export default {
 <style scoped>
 .container{
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
 }
 </style>
