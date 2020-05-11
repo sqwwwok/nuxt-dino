@@ -70,9 +70,9 @@ export default {
       PLAYER_HEIGHT,
       MAXHEIGHT,
       obstacles: [],
-      obstacleTimeout: null,  // setTimeout()
+      obstacleTimeout: 0,  // setTimeout()
       saveStart: 'prevent',   // 'ready' | Number | 'prevent'
-      springInterval: null,   // setInterval()
+      springAnimation: 0,   // requestAnimationFrame()
       playerPosition: 0,
       startCard: true,
       componentId: ''
@@ -118,19 +118,18 @@ export default {
       var initialVelocity = (new Date().getTime() - this.saveStart) * SPRING_POWER;
       var vm = this, freeFallTime = 0;
       this.saveStart = 'prevent';
-      this.springInterval = setInterval(setPosition,OBSERVE_INTERVAL);
-      function setPosition () {
+      (function setPosition () {
         freeFallTime += OBSERVE_INTERVAL;
         var position = initialVelocity*freeFallTime - GRAVITY*Math.pow(freeFallTime,2);
         // 截获<=0的position
         if(position<=0) position = 0;
         vm.playerPosition = position;
+        vm.springAnimation = requestAnimationFrame(setPosition);
         vm.checkPosition(position)
-      }          
+      }) ()          
     },
     finishSpring () {
-      clearInterval(this.springInterval);
-      this.springInterval = null;
+      cancelAnimationFrame(this.springAnimation);
       this.saveStart = 'ready';
     },
     checkPosition (position=this.playerPosition) {
@@ -146,7 +145,6 @@ export default {
       this.finishSpring();
       this.saveStart = 'prevent'
       clearTimeout(this.obstacleTimeout);
-      this.obstacleTimeout = null;
       this.OBSTACLE_CONFIG.generate = false;
       this.OBSTACLE_CONFIG.move.move = false;
       this.$store.commit('clearAll');
