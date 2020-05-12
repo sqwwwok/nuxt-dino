@@ -20,8 +20,7 @@ module.exports = {
   ],
   plugins: [
     '@/plugins/element-ui',
-    '~/plugins/axios',
-    '~/plugins/konva'
+    '~/plugins/axios'
   ],
   // buildModules: [
   //   '@nuxtjs/eslint-module'

@@ -1,19 +1,19 @@
 <template>
   <div class='play'>
-    <message-box class="message-box" :msgViewed='msgViewed' @closeMsg='closeMsg' />
+    <MessageBox class="message-box" :msgViewed='msgViewed' @closeMsg='closeMsg' />
     <div class="start-box" v-if="!isGameRunning">
       <p>Are you ready ?</p>
       <el-button type="primary" @click="startGame">Go!!!</el-button>
     </div>
-    <dino :isRunning="isGameRunning" class="dino" />
-    <option-list class="option-list" @viewMsg="viewMsg" />
+    <Game :isRunning="isGameRunning" class="dino" />
+    <OptionList class="option-list" @viewMsg="viewMsg" />
   </div>
 </template>
 
 <script>
 import OptionList from '~/components/play-views/option-list'
 import MessageBox from '~/components/play-views/message-box'
-import Dino from '~/components/play-views/dino'
+import Game from '~/components/play-views/game'
 export default { 
   data () {
     return {
@@ -33,9 +33,7 @@ export default {
     }
   },
   components: { 
-    'message-box':MessageBox,
-    'option-list': OptionList, 
-    'dino': Dino 
+    MessageBox, OptionList, Game 
   }
 }
 </script>
