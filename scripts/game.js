@@ -129,7 +129,7 @@ function update() {
 
 function createUFO() {
   var ufo = ufos.create(1366, Phaser.Math.Between(0, 700), 'ufo')
-  ufo.setVelocityX(-1500);
+  ufo.setVelocityX(Phaser.Math.Between(-2000,-1000));
   ufo.setCollideWorldBounds(false);
   // ufo.allowGravity = false;
   ufoGenerator = setTimeout(createUFO, 2000)
@@ -140,7 +140,7 @@ function hitUFO(player, ufo) {
 }
 
 function prepareGame () {
-  ufos.clear(true,true);
+  ufos.clear(true, true);
   player.setPosition(300, 450);
   _gameState.state = 'readying'
 }
