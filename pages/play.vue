@@ -1,11 +1,7 @@
 <template>
   <div class='play'>
     <MessageBox class="message-box" :msgViewed='msgViewed' @closeMsg='closeMsg' />
-    <div class="start-box" v-if="!isGameRunning">
-      <p>Are you ready ?</p>
-      <el-button type="primary" @click="startGame">Go!!!</el-button>
-    </div>
-    <Game :isRunning="isGameRunning" class="dino" />
+    <Game class="dino" />
     <OptionList class="option-list" @viewMsg="viewMsg" />
   </div>
 </template>
@@ -17,14 +13,10 @@ import Game from '~/components/play-views/game'
 export default { 
   data () {
     return {
-      isGameRunning: false,
       msgViewed: '',
     }
   },
   methods: {
-    startGame(){
-      this.isGameRunning = !this.isGameRunning;
-    },
     viewMsg(msgName){
       this.msgViewed = msgName; 
     },
@@ -54,20 +46,18 @@ export default {
     #absolute-center();
     z-index: 3;
   }
-  & .start-box{
-    #absolute-center();
-    z-index: 2;
-  }
   & .dino{
+    #absolute-center();
     width: 100%;
     height: 100%;
     z-index: 1;
   }
   & .option-list{
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
     height: 100%;
+    z-index: 2;
   }
 
 }
