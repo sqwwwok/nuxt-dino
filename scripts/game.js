@@ -1,20 +1,33 @@
 import Phaser from 'phaser'
-var assets;
-var _gameState;
-// {
-//   state: 
-//  'readying'||'start'||'running'||'pause'||'waiting'||'restart'||'over'||'ending' || 'prepare'
-// }
+// 接收外部参数
+var assets, _gameState;
+{
+  state: 'readying'||'start'||'running'||'pause'||'waiting'||'restart'||'over'||'ending' || 'prepare';
+  score: 0;
 
+}
+
+// 游戏参数
+const  GRAVITY = 2000,
+PLAYER_VX = 500,
+PLAYER_VY = 1000,
+UFO_INTERVAL_BASE = 4000,
+UFO_ACC = 500,
+UFO_INTERVAL_MIN = 500,
+UFO_VX_MIN = 1000,
+UFO_VX_MAX = 2000; 
+
+// 游戏内部变量
 var scene;
 var player, platform, ufos, cursors;
-var ufoGenerator;
+var ufoGenerator = 0,
+ufoIncrement = 0;
 
 /**
- * @Description: 在canvas中生成1902*1080的游戏
+ * @Description: 启动1366*768的游戏
  * @Paraments: 
  ** canvas: 指定的canvas元素
- ** assets: playerImage, obsImage, groundImage, backgroundImage的src地址
+ ** assets: playerImage, obsImage, groundImage, bgImage的src地址
  ** gameState: 游戏的state
  * @Return: null
  */
@@ -36,7 +49,7 @@ function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, gameState
       default: 'arcade',
       arcade: {
         gravity: {
-          y: 2500
+          y: GRAVITY
         },
         debug: false
       }
@@ -128,11 +141,13 @@ function update() {
 }
 
 function createUFO() {
-  var ufo = ufos.create(1366, Phaser.Math.Between(0, 700), 'ufo')
-  ufo.setVelocityX(Phaser.Math.Between(-2000,-1000));
+  _gameState.score++;
+  var ufo = ufos.create(1366, Phaser.Math.Between(0, 750), 'ufo')
+  ufo.setVelocityX(Phaser.Math.Between(-UFO_VX_MAX,-UFO_VX_MIN));
   ufo.setCollideWorldBounds(false);
   // ufo.allowGravity = false;
-  ufoGenerator = setTimeout(createUFO, 2000)
+  ufoGenerator = setTimeout(createUFO, UFO_INTERVAL_BASE-ufoIncrement)
+  if(UFO_INTERVAL_BASE-ufoIncrement>UFO_INTERVAL_MIN) ufoIncrement+=UFO_ACC;
 }
 
 function hitUFO(player, ufo) {
@@ -146,22 +161,22 @@ function prepareGame () {
 }
 function startGame () {
   scene.physics.resume();
-  setTimeout(createUFO,2000);
+  setTimeout(createUFO,UFO_INTERVAL_BASE);
   _gameState.state = 'running';
 }
 function runGame () {
   if (cursors.left.isDown) {
-    player.setVelocityX(-160);
+    player.setVelocityX(-PLAYER_VX);
     player.anims.play('left', true);
   } else if (cursors.right.isDown) {
-    player.setVelocityX(160);
+    player.setVelocityX(PLAYER_VX);
     player.anims.play('right', true);
   } else {
     player.setVelocityX(0);
     player.anims.play('turn');
   }
   if (cursors.up.isDown && player.body.touching.down) {
-    player.setVelocityY(-800);
+    player.setVelocityY(-PLAYER_VY);
   }  
 }
 function pauseGame () {
@@ -170,13 +185,14 @@ function pauseGame () {
   _gameState.state = 'waiting';
 }
 function restartGame () {
-  setTimeout(createUFO, 2000);
+  setTimeout(createUFO, UFO_INTERVAL_BASE-ufoIncrement);
   scene.physics.resume();
   _gameState.state = 'running';
 }
-
 function overGame () {
   clearTimeout(ufoGenerator);
+  ufoIncrement = 0;
+  player.anims.play('turn');
   // 暂停游戏 
   scene.physics.pause();
   // 将分数传出
