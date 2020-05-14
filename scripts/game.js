@@ -104,7 +104,7 @@ function create() {
   });
 
   platform = this.physics.add.staticGroup();
-  platform.create(683, 730, 'ground').setScale(1).refreshBody();
+  platform.create(683, 737, 'ground').setScale(1).refreshBody();
 
   ufos = this.physics.add.group();
 
