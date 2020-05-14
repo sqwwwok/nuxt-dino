@@ -51,7 +51,7 @@ function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, gameState
 }
 
 function preload() {
-  this.load.spritesheet('player', assets.playerImage, { frameWidth: 32, frameHeight: 48 });
+  this.load.spritesheet('player', assets.playerImage, { frameWidth: 48, frameHeight: 72 });
   this.load.image('ground', assets.groundImage);
   this.load.image('ufo', assets.obsImage);
   this.load.image('bg', assets.bgImage)
