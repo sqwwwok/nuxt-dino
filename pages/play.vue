@@ -1,7 +1,7 @@
 <template>
   <div class='play'>
     <MessageBox class="message-box" :msgViewed='msgViewed' @closeMsg='closeMsg' />
-    <Game class="dino" />
+    <Game :state="state" class="dino" />
     <OptionList class="option-list" @viewMsg="viewMsg" />
   </div>
 </template>
@@ -14,14 +14,17 @@ export default {
   data () {
     return {
       msgViewed: '',
+      state: ''
     }
   },
   methods: {
     viewMsg(msgName){
-      this.msgViewed = msgName; 
+      this.msgViewed = msgName;
+      this.state = 'pause'
     },
     closeMsg(){
       this.msgViewed = '';
+      this.state = 'restart'
     }
   },
   components: { 

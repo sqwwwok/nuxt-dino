@@ -157,6 +157,7 @@ function hitUFO(player, ufo) {
 function prepareGame () {
   ufos.clear(true, true);
   player.setPosition(300, 450);
+  _gameState.score = 0;
   _gameState.state = 'readying'
 }
 function startGame () {
@@ -185,7 +186,7 @@ function pauseGame () {
   _gameState.state = 'waiting';
 }
 function restartGame () {
-  setTimeout(createUFO, UFO_INTERVAL_BASE-ufoIncrement);
+  ufoGenerator = setTimeout(createUFO, UFO_INTERVAL_BASE-ufoIncrement);
   scene.physics.resume();
   _gameState.state = 'running';
 }
@@ -195,7 +196,6 @@ function overGame () {
   player.anims.play('turn');
   // 暂停游戏 
   scene.physics.pause();
-  // 将分数传出
   _gameState.state = 'ending';
 }
 

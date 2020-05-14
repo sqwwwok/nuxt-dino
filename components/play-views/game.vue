@@ -20,6 +20,9 @@ import UFO from '~/assets/images/play/ufo.png'
 import Background from '~/assets/images/play/background.png'
 import game from '~/scripts/game'
 export default {
+  props: {
+    state: String
+  },
   data(){
     return {
       gameState: {
@@ -65,8 +68,12 @@ export default {
     }
   },
   watch: {
-    gameState: function(val, oldVal){
-
+    state: function (val, oldVal) {
+      if(val==='restart'){
+        this.changeGameState('restart');
+      }else if(val==='pause'){
+        this.changeGameState('pause');
+      }
     }
   }
 
