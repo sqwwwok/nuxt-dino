@@ -55,16 +55,16 @@ export default {
       screenHeight = window.innerHeight,
       screenWidth = window.innerWidth;
       // 全屏
-      canvasEl.style.height = screenHeight + 'px';
-      canvasEl.style.width = screenWidth + 'px';
+      // canvasEl.style.height = screenHeight + 'px';
+      // canvasEl.style.width = screenWidth + 'px';
       // 自适应
-      // if(screenWidth > screenHeight*rate){
-      //   canvasEl.style.height = screenHeight + 'px';
-      //   canvasEl.style.width = (screenHeight*rate) + 'px';
-      // }else{
-      //   canvasEl.style.width = screenWidth +'px';
-      //   canvasEl.style.height = (screenWidth/rate) + 'px'
-      // }
+      if(screenWidth > screenHeight*rate){
+        canvasEl.style.height = screenHeight + 'px';
+        canvasEl.style.width = (screenHeight*rate) + 'px';
+      }else{
+        canvasEl.style.width = screenWidth +'px';
+        canvasEl.style.height = (screenWidth/rate) + 'px'
+      }
 
     },
     changeGameState(state){
@@ -94,6 +94,8 @@ export default {
   position: relative;
   overflow: hidden;
   height: 100%;
+  margin: auto;
+  width: max-content;
   & .ready-box{
     color: white;
     #center-title()
