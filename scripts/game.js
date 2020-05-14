@@ -1,11 +1,6 @@
 import Phaser from 'phaser'
 // 接收外部参数
-var assets, _gameState;
-{
-  state: 'readying'||'start'||'running'||'pause'||'waiting'||'restart'||'over'||'ending' || 'prepare';
-  score: 0;
-
-}
+var assets, __connector;
 
 // 游戏参数
 const  GRAVITY = 2000,
@@ -18,8 +13,14 @@ UFO_VX_MIN = 1000,
 UFO_VX_MAX = 2000; 
 
 // 游戏内部变量
-var scene;
-var player, platform, ufos, cursors;
+// 封存所有的游戏状态
+var __game = {
+// 'readying' | 'start' | 'running' | 'pause' | 'waiting' | 'countinue' | 'over' | 'ending'  |  'prepare'
+  state: 'prepare',
+  score: 0,
+};
+var scene, cursors
+var player, platform, ufos;
 var ufoGenerator = 0,
 ufoIncrement = 0;
 
@@ -28,17 +29,12 @@ ufoIncrement = 0;
  * @Paraments: 
  ** canvas: 指定的canvas元素
  ** assets: playerImage, obsImage, groundImage, bgImage的src地址
- ** gameState: 游戏的state
- * @Return: null
+ ** connector: connector.ouput作为游戏内部数据的输出口
+ * @Return: 控制游戏状态的controller函数
  */
-function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, gameState) {
-  assets = {
-    playerImage,
-    obsImage,
-    groundImage,
-    bgImage
-  };
-  _gameState = gameState;
+function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, connector) {
+  assets = { playerImage, obsImage, groundImage, bgImage };
+  connector.output = __game;
   var gameConfig = {
     type: Phaser.CANVAS,
     width: 1366,
@@ -54,15 +50,44 @@ function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, gameState
         debug: false
       }
     },
-    scene: {
-      preload,
-      create,
-      update
-    }
+    scene: { preload, create, update }
   };
   new Phaser.Game(gameConfig);
+  return gameController;
 }
 
+function gameController (state) {
+  switch (state) {
+    case 'start':
+      if(__game.state==='readying') __game.state = 'start';
+      break;
+    case 'pause':
+      if(__game.state==='running') __game.state = 'pause';
+      break;
+    case 'continue':
+      if(__game.state==='waiting') __game.state = 'countinue';
+      break;
+    case 'replay':
+      overGame();
+      prepareGame();
+      startGame();
+      __game.state = 'running';
+      break;
+    case 'setting':
+      if(__game.state==='running') __game.state = 'pause';
+      break;
+    case 'exit':
+      overGame();
+      prepareGame();
+      __game.state = 'readying';
+      break;
+    default:
+      break;
+  }
+}
+
+
+// scene的附属函数
 function preload() {
   this.load.spritesheet('player', assets.playerImage, { frameWidth: 48, frameHeight: 72 });
   this.load.image('ground', assets.groundImage);
@@ -113,35 +138,12 @@ function create() {
 
   this.physics.pause();
   cursors = this.input.keyboard.createCursorKeys();
-}
 
-function update() {
-  switch (_gameState.state) {
-    case 'prepare':
-      prepareGame();
-      break;
-    case 'start':
-      startGame();
-      break;
-    case 'running': 
-      runGame();
-      break;
-    case 'pause': 
-      pauseGame();
-      break;
-    case 'restart': 
-      restartGame();
-      break;
-    case 'over': 
-      overGame();
-      break;
-    default:
-      break;
-  }
+  __game.state = 'prepare';
 }
 
 function createUFO() {
-  _gameState.score++;
+  __game.score++;
   var ufo = ufos.create(1366, Phaser.Math.Between(0, 750), 'ufo')
   ufo.setVelocityX(Phaser.Math.Between(-UFO_VX_MAX,-UFO_VX_MIN));
   ufo.setCollideWorldBounds(false);
@@ -151,19 +153,47 @@ function createUFO() {
 }
 
 function hitUFO(player, ufo) {
-  overGame();
+  __game.state = 'over';
+}
+
+function update() {
+  switch (__game.state) {
+    case 'prepare':
+      prepareGame();
+      __game.state = 'readying';
+      break;
+    case 'start':
+      startGame();
+      __game.state = 'running';
+      break;
+    case 'running': 
+      runGame();
+      break;
+    case 'pause': 
+      pauseGame();
+      __game.state = 'waiting';
+      break;
+    case 'countinue': 
+      restartGame();
+      __game.state = 'running';
+      break;
+    case 'over': 
+      overGame();
+      __game.state = 'ending';
+      break;
+    default:
+      break;
+  }
 }
 
 function prepareGame () {
   ufos.clear(true, true);
   player.setPosition(300, 450);
-  _gameState.score = 0;
-  _gameState.state = 'readying'
+  __game.score = 0;
 }
 function startGame () {
   scene.physics.resume();
-  setTimeout(createUFO,UFO_INTERVAL_BASE);
-  _gameState.state = 'running';
+  ufoGenerator = setTimeout(createUFO,UFO_INTERVAL_BASE);
 }
 function runGame () {
   if (cursors.left.isDown) {
@@ -183,12 +213,10 @@ function runGame () {
 function pauseGame () {
   clearTimeout(ufoGenerator);
   scene.physics.pause();
-  _gameState.state = 'waiting';
 }
 function restartGame () {
   ufoGenerator = setTimeout(createUFO, UFO_INTERVAL_BASE-ufoIncrement);
   scene.physics.resume();
-  _gameState.state = 'running';
 }
 function overGame () {
   clearTimeout(ufoGenerator);
@@ -196,7 +224,6 @@ function overGame () {
   player.anims.play('turn');
   // 暂停游戏 
   scene.physics.pause();
-  _gameState.state = 'ending';
 }
 
 export default main

@@ -10,7 +10,7 @@
 
 <script>
 var map = new Map([
-  ['el-icon-video-play', 'restart'],
+  ['el-icon-video-play', 'continue'],
   ['el-icon-video-pause', 'pause'],
   ['el-icon-refresh-left', 'replay'],
   ['el-icon-setting', 'setting'],

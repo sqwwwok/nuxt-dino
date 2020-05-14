@@ -1,16 +1,16 @@
 <template>
   <div class="game-container">
-    <div class="ready-box" v-if="gameState.state==='readying'">
+    <div class="ready-box" v-if="gameConnector.output.state==='readying'">
       <p>Are you ready ?</p>
       <el-button type="primary" @click="changeGameState('start')">Go!!!</el-button>
     </div>
-    <div class="over-box" v-if="gameState.state==='ending'">
+    <div class="over-box" v-if="gameConnector.output.state==='ending'">
       <p>You lose!</p>
-      <p>Final score: {{gameState.score}}</p>
-      <el-button type="primary" @click="changeGameState('prepare')">Try again</el-button>
+      <p>Final score: {{gameConnector.output.score}}</p>
+      <el-button type="primary" @click="changeGameState('replay')">Try again</el-button>
     </div>
     <canvas ref="canvas" class="game"></canvas>
-    <Sidebar class="sidebar" :isPaused="false" @iconClicked='handleIconClicked' />
+    <Sidebar class="sidebar" :isPaused="gameConnector.output.state === 'waiting'" @iconClicked='handleIconClicked' />
   </div>
 </template>
 
@@ -25,23 +25,23 @@ export default {
   components: { Sidebar },
   data(){
     return {
-      gameState: {
-        state: 'readying',
-        score: 0
-      }
+      gameConnector: {
+        output: {
+          state: '',
+          score: 0,
+        }
+      },
+      gameController: function(state){return}
     }
   },
   mounted(){
-    game(
-      this.$refs.canvas, 
-      {
-        playerImage: Mario,
-        obsImage: UFO,
-        groundImage: Ground,
-        bgImage: Background
-      },
-      this.gameState
-    );
+    var assets = {
+      playerImage: Mario,
+      obsImage: UFO,
+      groundImage: Ground,
+      bgImage: Background
+    };
+    this.gameController = game(this.$refs.canvas, assets, this.gameConnector);
     this.scaleCanvas();
     window.onresize = ()=>{
       this.scaleCanvas();
@@ -68,10 +68,10 @@ export default {
 
     },
     changeGameState(state){
-      this.gameState.state = state;
+      this.gameController(state);
     },
     handleIconClicked(icon){
-      console.log(icon);
+      this.changeGameState(icon);
     }
   }
 }
