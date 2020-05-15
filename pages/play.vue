@@ -134,6 +134,7 @@ export default {
     left: 0;
     top: 0;
     height: 90%;
+    margin-left: 30px;
   }
   & .setting-box{
     #absolute-center-box();

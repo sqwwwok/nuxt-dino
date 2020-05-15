@@ -1,10 +1,25 @@
 <template>
   <div class="sidebar" @click="handleClick">
-    <i class="el-icon-video-play" v-if="isPaused"></i>
-    <i class="el-icon-video-pause" v-else></i>
-    <i class="el-icon-refresh-left"></i>
-    <i class="el-icon-setting"></i>
-    <i class="el-icon-circle-close"></i>
+    <div class="icon-container" v-if="isPaused">
+      <i class="el-icon-video-play"></i>
+      <p>play</p>
+    </div>
+    <div class="icon-container" v-else>
+      <i class="el-icon-video-pause"></i>
+      <p>pause</p>
+    </div>
+    <div class="icon-container">
+      <i class="el-icon-refresh-left"></i>
+      <p>retry</p>
+    </div>
+    <div class="icon-container">
+      <i class="el-icon-setting"></i>
+      <p>setting</p>
+    </div>
+    <div class="icon-container">
+      <i class="el-icon-circle-close"></i>
+      <p>exit</p>
+    </div>
   </div>
 </template>
 
@@ -29,16 +44,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='less' scoped>
 .sidebar{
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-}
-i{
-  cursor: pointer;
-  font-size: 32px;
-  margin: 30px;
+  
+  & .icon-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & i{
+      cursor: pointer;
+      font-size: 32px;
+    }
+    & p{
+      text-align: center;
+    }
+  }
 }
 </style>
