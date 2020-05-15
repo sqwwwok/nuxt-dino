@@ -9,8 +9,8 @@ PLAYER_VY = 1000,
 UFO_INTERVAL_BASE = 4000,
 UFO_ACC = 500,
 UFO_INTERVAL_MIN = 500,
-UFO_VX_MIN = 1000,
-UFO_VX_MAX = 2000; 
+UFO_VX_MIN = 1500,
+UFO_VX_MAX = 2500; 
 
 // 游戏内部变量
 // 封存所有的游戏状态
@@ -72,9 +72,6 @@ function gameController (state) {
       prepareGame();
       startGame();
       __game.state = 'running';
-      break;
-    case 'setting':
-      if(__game.state==='running') __game.state = 'pause';
       break;
     case 'exit':
       overGame();
@@ -144,7 +141,7 @@ function create() {
 
 function createUFO() {
   __game.score++;
-  var ufo = ufos.create(1366, Phaser.Math.Between(0, 750), 'ufo')
+  var ufo = ufos.create(1500, Phaser.Math.Between(0, 750), 'ufo')
   ufo.setVelocityX(Phaser.Math.Between(-UFO_VX_MAX,-UFO_VX_MIN));
   ufo.setCollideWorldBounds(false);
   // ufo.allowGravity = false;

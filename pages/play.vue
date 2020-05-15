@@ -41,6 +41,7 @@ export default {
           score: 0,
         }
       },
+      // 游戏暴露的控制接口: start,pause,countinue,replay,exit
       gameController: function(state){},
       gameConfig: [
         {name: 'Full Screen', value: false},
@@ -88,7 +89,16 @@ export default {
     handleIconClicked(icon){
       this.changeGameState(icon);
       if(icon==='setting'){
+        // 当游戏进行中时，开启setting会触发暂停
+        if(!this.isSettingOpen && this.gameConnector.output.state==='running'){
+          this.changeGameState('pause');
+        }
         this.isSettingOpen = !this.isSettingOpen;
+      }else if(icon==='exit'){
+        this.changeGameState('exit');
+        this.$router.push('/');
+      }else{
+        this.changeGameState(icon);
       }
     },
     handleSetting(setting){
@@ -96,7 +106,7 @@ export default {
         this.gameConfig = setting;
         this.scaleCanvas();
       }
-      this.isSettingOpen = false;
+      this.handleIconClicked('setting');
     }
   }
 }
