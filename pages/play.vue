@@ -10,36 +10,51 @@
       <el-button type="primary" @click="changeGameState('replay')">Try again</el-button>
     </div>
     <canvas ref="canvas" class="game"></canvas>
+    <transition name='setting'>
+      <Setting class="setting-box"
+        v-if="isSettingOpen"
+        :originSetting="gameConfig" 
+        @changeSetting="handleSetting" />
+    </transition>
     <Sidebar class="sidebar" :isPaused="gameConnector.output.state === 'waiting'" @iconClicked='handleIconClicked' />
   </div>
 </template>
 
 <script>
-import Mario from '~/assets/images/play/player.png'
-import Ground from '~/assets/images/play/ground.png'
-import UFO from '~/assets/images/play/ufo.png'
-import Background from '~/assets/images/play/background.png'
+import player from '~/assets/images/play/player.png'
+import ground from '~/assets/images/play/ground.png'
+import ufo from '~/assets/images/play/ufo.png'
+import bg from '~/assets/images/play/background.png'
 import game from '~/scripts/game'
 import Sidebar from '~/components/play-views/sidebar'
+import Setting from '~/components/play-views/setting'
 export default {
-  components: { Sidebar },
+  components: { Sidebar, Setting },
   data(){
     return {
       gameConnector: {
+        input: {
+          config: {}
+        },
         output: {
           state: '',
           score: 0,
         }
       },
-      gameController: function(state){return}
+      gameController: function(state){},
+      gameConfig: [
+        {name: 'Full Screen', value: false},
+        {name: 'BGM', value: false},
+      ],
+      isSettingOpen: false,
     }
   },
   mounted(){
     var assets = {
-      playerImage: Mario,
-      obsImage: UFO,
-      groundImage: Ground,
-      bgImage: Background
+      playerImage: player,
+      obsImage: ufo,
+      groundImage: ground,
+      bgImage: bg
     };
     this.gameController = game(this.$refs.canvas, assets, this.gameConnector);
     this.scaleCanvas();
@@ -54,24 +69,34 @@ export default {
       var canvasEl = this.$refs.canvas,
       screenHeight = window.innerHeight,
       screenWidth = window.innerWidth;
-      // 全屏
-      // canvasEl.style.height = screenHeight + 'px';
-      // canvasEl.style.width = screenWidth + 'px';
-      // 自适应
-      if(screenWidth > screenHeight*rate){
+      if(this.gameConfig[0].value){
         canvasEl.style.height = screenHeight + 'px';
-        canvasEl.style.width = (screenHeight*rate) + 'px';
+        canvasEl.style.width = screenWidth + 'px';
       }else{
-        canvasEl.style.width = screenWidth +'px';
-        canvasEl.style.height = (screenWidth/rate) + 'px'
+        if(screenWidth > screenHeight*rate){
+          canvasEl.style.height = screenHeight + 'px';
+          canvasEl.style.width = (screenHeight*rate) + 'px';
+        }else{
+          canvasEl.style.width = screenWidth +'px';
+          canvasEl.style.height = (screenWidth/rate) + 'px'
+        }        
       }
-
     },
     changeGameState(state){
       this.gameController(state);
     },
     handleIconClicked(icon){
       this.changeGameState(icon);
+      if(icon==='setting'){
+        this.isSettingOpen = !this.isSettingOpen;
+      }
+    },
+    handleSetting(setting){
+      if(setting){
+        this.gameConfig = setting;
+        this.scaleCanvas();
+      }
+      this.isSettingOpen = false;
     }
   }
 }
@@ -110,6 +135,18 @@ export default {
     top: 0;
     height: 90%;
   }
+  & .setting-box{
+    #absolute-center-box();
+    z-index: 2;
+    width: 50%;
+  }
 }
 
+.setting-enter-active, .setting-leave-active{
+  transition: all .3s ease;
+}
+.setting-enter, .setting-leave-to{
+  opacity: 0;
+  transform: translateX(100px);
+}
 </style>
