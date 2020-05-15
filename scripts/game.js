@@ -59,13 +59,22 @@ function main(canvasEl, {playerImage, obsImage, groundImage, bgImage}, connector
 function gameController (state) {
   switch (state) {
     case 'start':
-      if(__game.state==='readying') __game.state = 'start';
+      if(__game.state==='readying'){
+        startGame();
+        __game.state = 'running';
+      }
       break;
     case 'pause':
-      if(__game.state==='running') __game.state = 'pause';
+      if(__game.state==='running'){
+        pauseGame();
+        __game.state = 'waiting';
+      } 
       break;
     case 'continue':
-      if(__game.state==='waiting') __game.state = 'countinue';
+      if(__game.state==='waiting'){
+        restartGame();
+        __game.state = 'running';
+      } 
       break;
     case 'replay':
       overGame();

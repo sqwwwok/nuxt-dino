@@ -95,7 +95,6 @@ export default {
         }
         this.isSettingOpen = !this.isSettingOpen;
       }else if(icon==='exit'){
-        this.changeGameState('exit');
         this.$router.push('/');
       }else{
         this.changeGameState(icon);
@@ -108,6 +107,10 @@ export default {
       }
       this.handleIconClicked('setting');
     }
+  },
+  beforeDestroy(){
+    this.changeGameState('exit');
+    console.log('beforeDestory');
   }
 }
 </script>
