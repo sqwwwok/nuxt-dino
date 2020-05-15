@@ -33,12 +33,12 @@ export default {
   data (){
     return {
       defaultSetting,
-      currentSetting: this.originSetting.slice()
+      currentSetting: JSON.parse(JSON.stringify(this.originSetting))
     }
   },
   methods: {
     uploadChange () {
-      this.$emit('changeSetting',this.currentSetting.slice());
+      this.$emit('changeSetting',JSON.parse(JSON.stringify(this.currentSetting)));
     },
     cancelChange () {
       this.$emit('changeSetting',null)
