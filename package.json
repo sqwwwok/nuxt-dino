@@ -19,7 +19,7 @@
     "element-ui": "^2.4.11",
     "express": "^4.16.4",
     "mysql": "^2.18.1",
-    "nuxt": "^2.0.0",
+    "nuxt": "^3.4.3",
     "phaser": "^3.23.0"
   },
   "devDependencies": {
